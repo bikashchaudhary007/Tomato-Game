@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "767945626095",
+    "project_id": "tomatogame-4b139",
+    "storage_bucket": "tomatogame-4b139.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:767945626095:android:31c19a63356019ed62e61a",
+        "android_client_info": {
+          "package_name": "com.example.tomatogame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEM-5iDLspSOcEDSnQLNyao-BRyn0opnA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
