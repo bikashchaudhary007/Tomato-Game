@@ -45,6 +45,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Tomato Game',
+      theme: ThemeData(
+        // useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.redAccent),
+      ),
       home: SplashScreen(
         child: LoginPage(),
       ),
