@@ -1,11 +1,31 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/sign_up_page.dart';
 import 'package:tomatogame/Features/user_auth/presentation/widgets/form_container_widget.dart';
 
+import '../../firebase_auth_implementation/firebase_auth_services.dart';
 import 'home_page.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+
+  final FirebaseAuthService _auth = FirebaseAuthService();
+
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +48,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               FormContainerWidget(
+                controller: _emailController,
                 hintText: "Email",
                 isPasswordField: false,
               ),
@@ -37,6 +58,7 @@ class LoginPage extends StatelessWidget {
               ),
 
               FormContainerWidget(
+                controller: _passwordController,
                 hintText: "Password",
                 isPasswordField: true,
               ),
@@ -46,9 +68,10 @@ class LoginPage extends StatelessWidget {
               ),
 
               GestureDetector(
-                onTap: (){
-                  Navigator.push(context,MaterialPageRoute(builder: (context)=>HomePage()));
-                },
+                onTap: _signIn,
+                // onTap: (){
+                //   Navigator.push(context,MaterialPageRoute(builder: (context)=>HomePage()));
+                // },
                 child: Container(
                   width: double.infinity,
                   height: 45,
@@ -63,7 +86,7 @@ class LoginPage extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              
+
               Row(mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text("Don't have an account?"),
@@ -89,5 +112,21 @@ class LoginPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  //Sing In Method
+  void _signIn() async {
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? user = await _auth.signInWithEmainAndPassword(email, password);
+
+    if (user != null) {
+      print("Sign In  successfully");
+      // Navigator.pushNamed(context, "/home");
+      Navigator.push(context,MaterialPageRoute(builder: (context)=>HomePage()));
+    } else {
+      print("Sing In Errored");
+    }
   }
 }
