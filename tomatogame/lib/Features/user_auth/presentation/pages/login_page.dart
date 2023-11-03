@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/sign_up_page.dart';
 import 'package:tomatogame/Features/user_auth/presentation/widgets/form_container_widget.dart';
+import 'package:tomatogame/global/common/toast.dart';
 
 import '../../firebase_auth_implementation/firebase_auth_services.dart';
 import 'home_page.dart';
@@ -14,6 +15,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool _isSigning = false;
 
   final FirebaseAuthService _auth = FirebaseAuthService();
 
@@ -46,27 +48,22 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: 30,
               ),
-
               FormContainerWidget(
                 controller: _emailController,
                 hintText: "Email",
                 isPasswordField: false,
               ),
-
               SizedBox(
                 height: 10,
               ),
-
               FormContainerWidget(
                 controller: _passwordController,
                 hintText: "Password",
                 isPasswordField: true,
               ),
-
               SizedBox(
                 height: 30,
               ),
-
               GestureDetector(
                 onTap: _signIn,
                 // onTap: (){
@@ -79,34 +76,47 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: BorderRadius.circular(10),
                     color: Colors.blue,
                   ),
-                  child: Center(child: Text("Login", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+                  child: Center(
+                      child: _isSigning
+                          ? CircularProgressIndicator(
+                              color: Colors.green,
+                            )
+                          : Text(
+                              "Login",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            )),
                 ),
               ),
-
               SizedBox(
                 height: 20,
               ),
-
-              Row(mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Don't have an account?"),
-                    SizedBox(width: 5,),
-                    GestureDetector(
-                      onTap: (){
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => SignUpPage()),
-                              (route) => false,
-                        );
-                      },
-
-                      child: Text("Sing Up",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.bold,),),
-                    )
-                  ],),
-
-
-
-
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Don't have an account?"),
+                  SizedBox(
+                    width: 5,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                        (route) => false,
+                      );
+                    },
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ],
           ),
         ),
@@ -116,17 +126,26 @@ class _LoginPageState extends State<LoginPage> {
 
   //Sing In Method
   void _signIn() async {
+    setState(() {
+      _isSigning = true;
+    });
+
     String email = _emailController.text;
     String password = _passwordController.text;
 
     User? user = await _auth.signInWithEmainAndPassword(email, password);
 
+    setState(() {
+      _isSigning = false;
+    });
+
     if (user != null) {
-      print("Sign In  successfully");
+      showToast(message: "Sign In  successfully");
       // Navigator.pushNamed(context, "/home");
-      Navigator.push(context,MaterialPageRoute(builder: (context)=>HomePage()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => HomePage()));
     } else {
-      print("Sing In Errored");
+      showToast(message:"Sing In Errored");
     }
   }
 }

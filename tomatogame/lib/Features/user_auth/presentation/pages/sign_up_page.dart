@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tomatogame/Features/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:tomatogame/Features/user_auth/presentation/widgets/form_container_widget.dart';
+import 'package:tomatogame/global/common/toast.dart';
 
 import 'login_page.dart';
 
@@ -13,6 +14,8 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  bool _signUping = false;
+
   final FirebaseAuthService _auth = FirebaseAuthService();
 
   TextEditingController _usernameController = TextEditingController();
@@ -80,11 +83,16 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Colors.blue,
                   ),
                   child: Center(
-                      child: Text(
-                    "Sign Up",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  )),
+                      child: _signUping
+                          ? CircularProgressIndicator(
+                              color: Colors.green,
+                            )
+                          : Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            )),
                 ),
               ),
               SizedBox(
@@ -123,18 +131,27 @@ class _SignUpPageState extends State<SignUpPage> {
 
   //Sing Up Method
   void _signUp() async {
+    setState(() {
+      _signUping = true;
+    });
+
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
 
     User? user = await _auth.signUpWithEmainAndPassword(email, password);
 
+    setState(() {
+      _signUping = false;
+    });
+
     if (user != null) {
-      print("User is successfully created");
+      showToast(message: "User is successfully created");
       // Navigator.pushNamed(context, "/home");
-      Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPage()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
     } else {
-      print("Sing Up Errored");
+      showToast(message: "Sing Up Errored");
     }
   }
 }
