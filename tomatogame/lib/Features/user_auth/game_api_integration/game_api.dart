@@ -74,7 +74,7 @@ Future<GameData> fetchGameDataFromAPI() async {
 GameData createGameData(Map<String, dynamic> data) {
   String imageUrl = data["question"];
   // print(imageUrl);
-  String solution = data["solution"].toString(); // Convert to Strin;
+  String solution = data["solution"].toString(); // Convert to String;
   return GameData(
     imageUrl: imageUrl,
     solution: solution,

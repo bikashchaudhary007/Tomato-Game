@@ -4,6 +4,8 @@ import 'package:tomatogame/Features/user_auth/game_api_integration/game_api.dart
 import 'package:tomatogame/Features/user_auth/presentation/pages/login_page.dart';
 import 'package:tomatogame/global/common/toast.dart';
 
+import '../../../../GameLogics/random_num.dart';
+
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
@@ -85,7 +87,12 @@ class HomePage extends StatelessWidget {
             SizedBox(
               height: 30,
             ),
+
+            //Calling Game API
             GameApi(),
+
+            //Testing Random Number Generator
+            RandomNum(),
 
             
             SizedBox(
