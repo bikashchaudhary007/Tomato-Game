@@ -4,8 +4,35 @@ import 'dart:convert';
 
 import '../../../GameLogics/random_num.dart';
 
-class GameApi extends StatelessWidget {
+class GameApi extends StatefulWidget {
   const GameApi({super.key});
+
+  @override
+  State<GameApi> createState() => _GameApiState();
+}
+
+class _GameApiState extends State<GameApi> {
+  late GameData currentGameData;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchGameDataFromAPI().then((gameData) {
+      setState(() {
+        currentGameData = gameData;
+      });
+    });
+  }
+
+  void fetchNewDataAndRestart() {
+    fetchGameDataFromAPI().then((gameData) {
+      setState(() {
+        currentGameData = gameData;
+      });
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +49,8 @@ class GameApi extends StatelessWidget {
               return Center(child: Text("No data available."));
             }
 
+            currentGameData = snapshot.data!;
+
             // Display the image using Image.network
             return Column(
               mainAxisAlignment:
@@ -29,7 +58,7 @@ class GameApi extends StatelessWidget {
               children: <Widget>[
                 Center(
                   child: Image.network(
-                    snapshot.data?.imageUrl ?? '',
+                     currentGameData.imageUrl,
                     errorBuilder: (context, error, stackTrace) {
                       return Column(
                         children: [
@@ -43,13 +72,17 @@ class GameApi extends StatelessWidget {
                 SizedBox(
                     height: 16), // Add some space between the image and the text.
                 Text(
-                  snapshot.data?.solution ?? '',
+                  currentGameData.solution,
                   style: TextStyle(fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center, // Center the text horizontally.
                 ),
                 Divider(),
 
-                RandomNum(solValue: snapshot.data?.solution ?? '',)
+                // RandomNum(solValue: snapshot.data?.solution ?? '',)
+                RandomNum(
+                  solValue: currentGameData.solution,
+                  onAnswerCorrect: fetchNewDataAndRestart,
+                )
               ],
             );
           },
@@ -59,7 +92,6 @@ class GameApi extends StatelessWidget {
     );
   }
 }
-
 
 Future<GameData> fetchGameDataFromAPI() async {
   final response =

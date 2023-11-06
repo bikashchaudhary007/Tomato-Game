@@ -6,8 +6,9 @@ import 'package:tomatogame/Features/user_auth/game_api_integration/game_api.dart
 import '../global/common/toast.dart';
 
 class RandomNum extends StatefulWidget {
-  const RandomNum({Key? key, required this.solValue}) : super(key: key);
+  const RandomNum({Key? key, required this.solValue, required this.onAnswerCorrect}) : super(key: key);
   final String solValue;
+  final VoidCallback onAnswerCorrect;
 
   @override
   _RandomNumState createState() => _RandomNumState();
@@ -77,12 +78,13 @@ class _RandomNumState extends State<RandomNum> {
   //Checking answer
   void checkAnswer(int selectedNumber) {
     if (selectedNumber == int.parse(widget.solValue)) {
-      showToast(message: "Correct");
+      // If the answer is correct, call the callback to fetch new data
+      showToast(message: "Correct Answer");
+      widget.onAnswerCorrect();
     } else {
       showToast(message: "Incorrect");
     }
   }
-
 
 
   @override
@@ -106,6 +108,10 @@ class _RandomNumState extends State<RandomNum> {
           child: Text("Generate Random Numbers"),
         ),
 
+        ElevatedButton(
+          onPressed: widget.onAnswerCorrect, // Call _randNum when the button is pressed.
+          child: Text("Another Question"),
+        ),
 
         //Answers Buttons
         Container(
