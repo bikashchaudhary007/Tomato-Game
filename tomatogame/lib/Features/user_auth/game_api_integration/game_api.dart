@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../../GameLogics/random_num.dart';
+
 class GameApi extends StatelessWidget {
   const GameApi({super.key});
 
@@ -46,6 +48,8 @@ class GameApi extends StatelessWidget {
                   textAlign: TextAlign.center, // Center the text horizontally.
                 ),
                 Divider(),
+
+                RandomNum(solValue: snapshot.data?.solution ?? '',)
               ],
             );
           },

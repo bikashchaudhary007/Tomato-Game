@@ -92,7 +92,7 @@ class HomePage extends StatelessWidget {
             GameApi(),
 
             //Testing Random Number Generator
-            RandomNum(),
+            // RandomNum(),
 
             
             SizedBox(
