@@ -74,6 +74,17 @@ class _RandomNumState extends State<RandomNum> {
     _randNum(); // Call _randNum in initState to set the initial value.
   }
 
+  //Checking answer
+  void checkAnswer(int selectedNumber) {
+    if (selectedNumber == int.parse(widget.solValue)) {
+      showToast(message: "Correct");
+    } else {
+      showToast(message: "Incorrect");
+    }
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -109,64 +120,32 @@ class _RandomNumState extends State<RandomNum> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              //Answer Option Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      // Handle button press, e.g., check if the pressed number matches the solValue
-                      // You can add your logic here
-                      // Check if the pressed number matches the solValue
-                      if (numbers[0] == int.parse(widget.solValue)) {
-                        showToast(message: "Correct");
-                      } else {
-                        showToast(message: "Incorrect");
-                      }
-                    },
+                    onPressed:  () => checkAnswer(numbers[0]),
                     child: Text("${numbers[0]}"),
                   ),
 
                   ElevatedButton(
-                    onPressed: () {
-                      // Handle button press, e.g., check if the pressed number matches the solValue
-                      // You can add your logic here.
-                      if (numbers[1] == int.parse(widget.solValue)) {
-                        showToast(message: "Correct");
-                      } else {
-                        showToast(message: "Incorrect");
-                      }
-                    },
+                    onPressed: () => checkAnswer(numbers[1]),
                     child: Text("${numbers[1]}"),
                   ),
 
                 ],
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
-                    onPressed: () {
-                      // Handle button press, e.g., check if the pressed number matches the solValue
-                      // You can add your logic here.
-                      if (numbers[2] == int.parse(widget.solValue)) {
-                        showToast(message: "Correct");
-                      } else {
-                        showToast(message: "Incorrect");
-                      }
-                    },
+                    onPressed: () => checkAnswer(numbers[2]),
                     child: Text("${numbers[2]}"),
                   ),
 
                   ElevatedButton(
-                    onPressed: () {
-                      // Handle button press, e.g., check if the pressed number matches the solValue
-                      if (numbers[3] == int.parse(widget.solValue)) {
-                        showToast(message: "Correct");
-                      } else {
-                        showToast(message: "Incorrect");
-                      }
-                    },
+                    onPressed: () => checkAnswer(numbers[3]),
                     child: Text("${numbers[3]}"),
                   ),
 
@@ -176,9 +155,6 @@ class _RandomNumState extends State<RandomNum> {
             ],
           ),
         ),
-
-
-
 
 
       ],
