@@ -21,6 +21,7 @@ class HomePage extends StatelessWidget {
           // mainAxisAlignment: MainAxisAlignment.center,
           children: [
 
+            /*
             //Level and Scores
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -83,6 +84,7 @@ class HomePage extends StatelessWidget {
                 ),
               ],
             ),
+             */
 
             SizedBox(
               height: 30,

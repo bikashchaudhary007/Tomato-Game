@@ -15,6 +15,9 @@ class RandomNum extends StatefulWidget {
 }
 
 class _RandomNumState extends State<RandomNum> {
+  //game score
+
+
   String solValue = '';
 
 
