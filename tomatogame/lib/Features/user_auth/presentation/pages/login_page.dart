@@ -117,6 +117,30 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ],
               ),
+
+              SizedBox(
+                height: 20,
+              ),
+
+              GestureDetector(
+                onTap: () {
+                  // Navigator.pushAndRemoveUntil(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => SignUpPage()),
+                  //       (route) => false,
+                  // );
+                },
+                child: Text(
+                  "Google SignIn",
+                  style: TextStyle(
+                    color: Colors.blue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+
+
+
             ],
           ),
         ),
