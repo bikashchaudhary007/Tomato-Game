@@ -1,15 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tomatogame/Features/user_auth/game_api_integration/game_api.dart';
+import 'package:tomatogame/GameLogics/game.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/login_page.dart';
 import 'package:tomatogame/global/common/toast.dart';
 
+
 import '../../../../GameLogics/random_num.dart';
+import '../../google_sign_in/google_sign_in.dart';
 
 class HomePage extends StatelessWidget {
   final String userName;
+  late  AuthenticationService _authService = AuthenticationService(); // Create an instance of AuthenticationService
 
-  const HomePage({Key? key, required this.userName}) : super(key: key);
+  HomePage({Key? key, required this.userName}) : super(key: key) {
+    _authService = AuthenticationService(); // Initialize in the constructor
+  }
+
   // const HomePage({super.key, required this.userName});
 
 
@@ -101,7 +107,7 @@ class HomePage extends StatelessWidget {
               ),
 
               //Calling Game API
-              GameApi(),
+              Game(),
 
               //Testing Random Number Generator
               // RandomNum(),
@@ -113,11 +119,17 @@ class HomePage extends StatelessWidget {
 
               GestureDetector(
                 // onTap: _signIn,
-                onTap: (){
+                onTap: () async {
                   // print("Logout Button Clicked");
+                  // Sign out from Firebase
                   FirebaseAuth.instance.signOut();
+
+                  // Sign out from Google
+                  await _authService.signOutFromGoogle();
+
                   Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPage()));
                   showToast(message: "Successfully sign out");
+
                 },
                 child: Container(
                   width: 100, //double.infinity

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import 'package:tomatogame/Features/user_auth/game_api_integration/game_api.dart';
+import 'package:tomatogame/GameLogics/game.dart';
 
 import '../global/common/toast.dart';
 
