@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tomatogame/Features/user_auth/google_sign_in/google_sign_in.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/sign_up_page.dart';
 import 'package:tomatogame/Features/user_auth/presentation/widgets/form_container_widget.dart';
 import 'package:tomatogame/global/common/toast.dart';
@@ -18,6 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   bool _isSigning = false;
 
   final FirebaseAuthService _auth = FirebaseAuthService();
+  final AuthenticationService _authService = AuthenticationService();
 
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
@@ -122,22 +124,22 @@ class _LoginPageState extends State<LoginPage> {
                 height: 20,
               ),
 
-              GestureDetector(
-                onTap: () {
-                  // Navigator.pushAndRemoveUntil(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => SignUpPage()),
-                  //       (route) => false,
-                  // );
-                },
-                child: Text(
-                  "Google SignIn",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              )
+          ElevatedButton(
+            onPressed: () async {
+              User? user = await _authService.signInWithGoogle();
+              if (user != null) {
+                print("Signed in: ${user.displayName}");
+
+                //Navigate to home page
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage(userName: user.displayName ?? '')),);
+              } else {
+                print("Sign-in failed");
+              }
+            },
+            child: Text("Sign In with Google"),
+          ),
 
 
 
@@ -166,8 +168,9 @@ class _LoginPageState extends State<LoginPage> {
     if (user != null) {
       showToast(message: "Sign In  successfully");
       // Navigator.pushNamed(context, "/home");
+      var user = "User";
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage()));
+          context, MaterialPageRoute(builder: (context) => HomePage(userName: user,)));
     } else {
       showToast(message:"Sing In Errored");
     }

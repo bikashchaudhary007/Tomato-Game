@@ -12,7 +12,20 @@
           "package_name": "com.example.tomatogame"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "975932705194-76eb3f6ng0tvbl7f8nfkc5eqmkcjnog4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tomatogame",
+            "certificate_hash": "79bcece4e4bf072c2b5f1b91b2e715e57e4f007f"
+          }
+        },
+        {
+          "client_id": "975932705194-6qv5a77s329erno0ddref6n41ca3n7pn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyClO9MrnPNuV1hKEyFalhNlWO-wcs2JmH8"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975932705194-6qv5a77s329erno0ddref6n41ca3n7pn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

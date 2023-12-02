@@ -7,7 +7,11 @@ import 'package:tomatogame/global/common/toast.dart';
 import '../../../../GameLogics/random_num.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final String userName;
+
+  const HomePage({Key? key, required this.userName}) : super(key: key);
+  // const HomePage({super.key, required this.userName});
+
 
   @override
   Widget build(BuildContext context) {
@@ -15,112 +19,119 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("Tomato Game"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("$userName", style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24
+              ),),
 
-            /*
-            //Level and Scores
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              /*
+              //Level and Scores
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
 
-                //Level
-                Container(
-                  width: 120,
-                  height: 35,
-                  // color: Colors.redAccent,
-                  decoration: BoxDecoration(
-                    color: Colors.redAccent,
-                    borderRadius: BorderRadius.circular(18)
-                  ),
-
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text("Level", style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24
-                      ),),
-
-                      Text("07", style: TextStyle(
-                          color: Colors.yellow,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24
-                      ),),
-                    ],
-                  ),
-                ),
-
-                //Score
-                Container(
-                  width: 120,
-                  height: 35,
-                  // color: Colors.redAccent,
-                  decoration: BoxDecoration(
+                  //Level
+                  Container(
+                    width: 120,
+                    height: 35,
+                    // color: Colors.redAccent,
+                    decoration: BoxDecoration(
                       color: Colors.redAccent,
                       borderRadius: BorderRadius.circular(18)
-                  ),
+                    ),
 
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      // Text("Level", style: TextStyle(
-                      //     color: Colors.white,
-                      //     fontWeight: FontWeight.bold,
-                      //     fontSize: 24
-                      // ),),
-
-                      Text("250", style: TextStyle(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text("Level", style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 24
-                      ),),
-                    ],
+                        ),),
+
+                        Text("07", style: TextStyle(
+                            color: Colors.yellow,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24
+                        ),),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-             */
 
-            SizedBox(
-              height: 30,
-            ),
+                  //Score
+                  Container(
+                    width: 120,
+                    height: 35,
+                    // color: Colors.redAccent,
+                    decoration: BoxDecoration(
+                        color: Colors.redAccent,
+                        borderRadius: BorderRadius.circular(18)
+                    ),
 
-            //Calling Game API
-            GameApi(),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // Text("Level", style: TextStyle(
+                        //     color: Colors.white,
+                        //     fontWeight: FontWeight.bold,
+                        //     fontSize: 24
+                        // ),),
 
-            //Testing Random Number Generator
-            // RandomNum(),
-
-            
-            SizedBox(
-              height: 30,
-            ),
-
-            GestureDetector(
-              // onTap: _signIn,
-              onTap: (){
-                // print("Logout Button Clicked");
-                FirebaseAuth.instance.signOut();
-                Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPage()));
-                showToast(message: "Successfully sign out");
-              },
-              child: Container(
-                width: 100, //double.infinity
-                height: 45,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Colors.blue,
-                ),
-                child: Center(child: Text("LogOut", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+                        Text("250", style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24
+                        ),),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
+               */
 
-          ],
+              SizedBox(
+                height: 30,
+              ),
+
+              //Calling Game API
+              GameApi(),
+
+              //Testing Random Number Generator
+              // RandomNum(),
+
+              
+              SizedBox(
+                height: 30,
+              ),
+
+              GestureDetector(
+                // onTap: _signIn,
+                onTap: (){
+                  // print("Logout Button Clicked");
+                  FirebaseAuth.instance.signOut();
+                  Navigator.push(context,MaterialPageRoute(builder: (context)=>LoginPage()));
+                  showToast(message: "Successfully sign out");
+                },
+                child: Container(
+                  width: 100, //double.infinity
+                  height: 45,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.blue,
+                  ),
+                  child: Center(child: Text("LogOut", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+                ),
+              ),
+
+            ],
+          ),
         ),
       ),
     );
