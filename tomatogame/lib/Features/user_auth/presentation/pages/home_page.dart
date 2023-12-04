@@ -5,6 +5,7 @@ import 'package:tomatogame/Features/user_auth/presentation/pages/login_page.dart
 import 'package:tomatogame/global/common/toast.dart';
 
 
+import '../../../../GameLogics/game2.dart';
 import '../../../../GameLogics/random_num.dart';
 import '../../google_sign_in/google_sign_in.dart';
 
@@ -107,8 +108,8 @@ class HomePage extends StatelessWidget {
               ),
 
               //Calling Game API
-              Game(),
-
+              // Game(),
+              Game2(),
               //Testing Random Number Generator
               // RandomNum(),
 
