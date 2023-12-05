@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tomatogame/GameLogics/random_num.dart';
 import '../Features/user_auth/game_api_integration/game_api.dart';
-import 'random_num.dart';
+
 
 class Game2 extends StatefulWidget {
   const Game2({Key? key}) : super(key: key);
@@ -13,12 +15,14 @@ class Game2 extends StatefulWidget {
 
 class _GameState extends State<Game2> {
   int score = 0;
-  int level = 1; // Added level variable
+  int level = 1;
   late GameData currentGameData;
-  late User? currentUser; // Variable to store the current user
-
+  late User? currentUser;
   late Future<GameData> gameQuestions;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late bool _gameOver = false;
+  late Timer _timer;
+  late int _remainingTime = 30;
 
   @override
   void initState() {
@@ -26,6 +30,38 @@ class _GameState extends State<Game2> {
     _loadUserData();
     _loadScoreFromFirestore();
     _updateGameData();
+    _startTimer();
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel(); // Cancel the timer to avoid memory leaks
+    super.dispose();
+  }
+
+  void _startTimer() {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_remainingTime > 0) {
+          _remainingTime--;
+        } else {
+          _timer.cancel(); // Stop the timer when time is up
+          _showGameOverDialog();
+        }
+      });
+    });
+  }
+
+  void _resetTimer() {
+    setState(() {
+      _remainingTime = 30;
+    });
+  }
+
+  void _addTimeToTimer(int seconds) {
+    setState(() {
+      _remainingTime += seconds;
+    });
   }
 
   Future<void> _loadUserData() async {
@@ -39,7 +75,7 @@ class _GameState extends State<Game2> {
 
       setState(() {
         score = scoreDoc.exists ? scoreDoc.data()!['score'] ?? 0 : 0;
-        level = ((score ~/ 10) + 1); // Update level based on the score
+        level = ((score ~/ 10) + 1);
       });
     }
   }
@@ -54,18 +90,17 @@ class _GameState extends State<Game2> {
   }
 
   void fetchNewQuestionAndAnswer() {
+    _addTimeToTimer(5); // Add 5 seconds to the timer
     gameQuestions = fetchGameDataFromAPI();
     gameQuestions.then((gameData) {
       setState(() {
         currentGameData = gameData;
         score++;
-        print('Score: $score');
+
         _saveScoreToFirestore();
 
-        // Check if score is a multiple of 10 to increase the level
         if (score % 10 == 0) {
           level++;
-          print('Level increased to: $level');
         }
       });
     });
@@ -80,15 +115,42 @@ class _GameState extends State<Game2> {
     }
   }
 
+  void _showGameOverDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Game Over'),
+        content: Text('Your final score is $score'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              _restartGame();
+            },
+            child: Text('Play Again'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _restartGame() {
+    setState(() {
+      _gameOver = false;
+      _remainingTime = 30;
+    });
+
+    _startTimer();
+    _updateGameData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Level and Scores
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // Level Container
             Container(
               width: 120,
               height: 35,
@@ -106,7 +168,7 @@ class _GameState extends State<Game2> {
                         fontSize: 24),
                   ),
                   Text(
-                    "$level", // Display the current level
+                    "$level",
                     style: TextStyle(
                         color: Colors.yellow,
                         fontWeight: FontWeight.bold,
@@ -115,8 +177,6 @@ class _GameState extends State<Game2> {
                 ],
               ),
             ),
-
-            // Score Container
             Container(
               width: 120,
               height: 35,
@@ -138,8 +198,24 @@ class _GameState extends State<Game2> {
             ),
           ],
         ),
-
-        // Game Data
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            CircularProgressIndicator(
+              value: 1 - (_remainingTime / 30),
+              color: Colors.red,
+            ),
+            Text(
+              '$_remainingTime',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 16),
         FutureBuilder<GameData>(
           future: gameQuestions,
           builder: (context, snapshot) {
