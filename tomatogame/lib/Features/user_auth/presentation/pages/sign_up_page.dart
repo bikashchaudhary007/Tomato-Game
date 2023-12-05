@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tomatogame/Features/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:tomatogame/Features/user_auth/presentation/widgets/form_container_widget.dart';
 import 'package:tomatogame/global/common/toast.dart';
@@ -7,14 +8,14 @@ import 'package:tomatogame/global/common/toast.dart';
 import 'login_page.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  bool _signUping = false;
+  bool _signingUp = false;
 
   final FirebaseAuthService _auth = FirebaseAuthService();
 
@@ -29,6 +30,22 @@ class _SignUpPageState extends State<SignUpPage> {
     _passwordController.dispose();
     super.dispose();
   }
+
+  Future<void> _saveUserDetailsToFirestore(User user, String username, {String? googleDisplayName, String? googleEmail}) async {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    Map<String, dynamic> userData = {
+      'uid': user.uid,
+      'displayName': username,
+      'email': user.email,
+      'password': 'encrypted_password', // Store a hashed or encrypted password
+      'googleDisplayName': googleDisplayName,
+      'googleEmail': googleEmail,
+    };
+
+    await users.doc(user.uid).set(userData);
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,16 +100,17 @@ class _SignUpPageState extends State<SignUpPage> {
                     color: Colors.blue,
                   ),
                   child: Center(
-                      child: _signUping
-                          ? CircularProgressIndicator(
-                              color: Colors.green,
-                            )
-                          : Text(
-                              "Sign Up",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            )),
+                    child: _signingUp
+                        ? CircularProgressIndicator(
+                      color: Colors.green,
+                    )
+                        : Text(
+                      "Sign Up",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
                 ),
               ),
               SizedBox(
@@ -101,16 +119,17 @@ class _SignUpPageState extends State<SignUpPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Already have account"),
+                  Text("Already have an account"),
                   SizedBox(
                     width: 5,
                   ),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => LoginPage()),
-                          (route) => false);
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+                            (route) => false,
+                      );
                     },
                     child: Text(
                       "Sign In",
@@ -129,29 +148,38 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  //Sing Up Method
+  // Sign Up Method
   void _signUp() async {
     setState(() {
-      _signUping = true;
+      _signingUp = true;
     });
 
     String username = _usernameController.text;
     String email = _emailController.text;
     String password = _passwordController.text;
 
-    User? user = await _auth.signUpWithEmainAndPassword(email, password);
+    try {
+      User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
-    setState(() {
-      _signUping = false;
-    });
+      if (user != null) {
+        // Save additional details to Firestore
+        await _saveUserDetailsToFirestore(user, username);
 
-    if (user != null) {
-      showToast(message: "User is successfully created");
-      // Navigator.pushNamed(context, "/home");
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
-    } else {
-      showToast(message: "Sing Up Errored");
+        showToast(message: "User successfully created");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      } else {
+        showToast(message: "Sign Up error");
+      }
+    } catch (e) {
+      print("Sign Up error: $e");
+      showToast(message: "Sign Up failed: $e");
+    } finally {
+      setState(() {
+        _signingUp = false;
+      });
     }
   }
 }

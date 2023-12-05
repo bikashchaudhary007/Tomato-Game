@@ -1,15 +1,16 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:tomatogame/Features/user_auth/google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/sign_up_page.dart';
+import 'package:tomatogame/Features/user_auth/presentation/pages/welcome_page.dart';
 import 'package:tomatogame/Features/user_auth/presentation/widgets/form_container_widget.dart';
 import 'package:tomatogame/global/common/toast.dart';
-
-import '../../firebase_auth_implementation/firebase_auth_services.dart';
+import 'package:tomatogame/Features/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
+import '../../google_sign_in/google_sign_in.dart';
 import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -17,10 +18,8 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isSigning = false;
-
   final FirebaseAuthService _auth = FirebaseAuthService();
   final AuthenticationService _authService = AuthenticationService();
-
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -29,6 +28,46 @@ class _LoginPageState extends State<LoginPage> {
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signIn(String signInMethod) async {
+    setState(() {
+      _isSigning = true;
+    });
+
+    String email = _emailController.text;
+    String password = _passwordController.text;
+
+    User? signInUser;
+
+    try {
+      if (signInMethod == 'email') {
+        signInUser = await _auth.signInWithEmailAndPassword(email, password);
+      } else if (signInMethod == 'google') {
+        signInUser = await _authService.signInWithGoogle();
+      }
+    } catch (e) {
+      print("$signInMethod Sign In failed: $e");
+      showToast(message: "Sign In failed: $e");
+    }
+
+    if (signInUser != null) {
+      showToast(message: "$signInMethod Sign In successfully");
+      _navigateToHomePage(signInUser);
+    } else {
+      showToast(message: "$signInMethod Sign In failed");
+    }
+
+    setState(() {
+      _isSigning = false;
+    });
+  }
+
+  Future<void> _navigateToHomePage(User user) async {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => WelcomePage()),
+    );
   }
 
   @override
@@ -66,30 +105,13 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 height: 30,
               ),
-              GestureDetector(
-                onTap: _signIn,
-                // onTap: (){
-                //   Navigator.push(context,MaterialPageRoute(builder: (context)=>HomePage()));
-                // },
-                child: Container(
-                  width: double.infinity,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.blue,
-                  ),
-                  child: Center(
-                      child: _isSigning
-                          ? CircularProgressIndicator(
-                              color: Colors.green,
-                            )
-                          : Text(
-                              "Login",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            )),
-                ),
+              ElevatedButton(
+                onPressed: () async {
+                  await _signIn('email');
+                },
+                child: _isSigning
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text("Login"),
               ),
               SizedBox(
                 height: 20,
@@ -106,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => SignUpPage()),
-                        (route) => false,
+                            (route) => false,
                       );
                     },
                     child: Text(
@@ -119,60 +141,19 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ],
               ),
-
               SizedBox(
                 height: 20,
               ),
-
-          ElevatedButton(
-            onPressed: () async {
-              User? user = await _authService.signInWithGoogle();
-              if (user != null) {
-                print("Signed in: ${user.displayName}");
-
-                //Navigate to home page
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage(userName: user.displayName ?? '')),);
-              } else {
-                print("Sign-in failed");
-              }
-            },
-            child: Text("Sign In with Google"),
-          ),
-
-
-
+              ElevatedButton(
+                onPressed: () async {
+                  await _signIn('google');
+                },
+                child: Text("Sign In with Google"),
+              ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  //Sing In Method
-  void _signIn() async {
-    setState(() {
-      _isSigning = true;
-    });
-
-    String email = _emailController.text;
-    String password = _passwordController.text;
-
-    User? user = await _auth.signInWithEmainAndPassword(email, password);
-
-    setState(() {
-      _isSigning = false;
-    });
-
-    if (user != null) {
-      showToast(message: "Sign In  successfully");
-      // Navigator.pushNamed(context, "/home");
-      var user = "User";
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => HomePage(userName: user,)));
-    } else {
-      showToast(message:"Sing In Errored");
-    }
   }
 }
