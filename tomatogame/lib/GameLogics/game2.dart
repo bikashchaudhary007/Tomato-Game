@@ -198,23 +198,7 @@ class _GameState extends State<Game2> {
             ),
           ],
         ),
-        Stack(
-          alignment: Alignment.center,
-          children: [
-            CircularProgressIndicator(
-              value: 1 - (_remainingTime / 30),
-              color: Colors.red,
-            ),
-            Text(
-              '$_remainingTime',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-            ),
-          ],
-        ),
+
         SizedBox(height: 16),
         FutureBuilder<GameData>(
           future: gameQuestions,
@@ -246,31 +230,34 @@ class _GameState extends State<Game2> {
                   ),
                 ),
                 SizedBox(height: 16),
-                Text(
-                  currentGameData.solution,
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircularProgressIndicator(
+                      value: 1 - (_remainingTime / 30),
+                      color: Colors.red,
+                    ),
+                    Text(
+                      '$_remainingTime',
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ],
                 ),
                 Divider(),
                 if (currentUser != null)
                   Column(
-                    children: [
-                      Text(
-                        'Welcome, ${currentUser!.displayName}!',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        'Your current username is: ${currentUser!.displayName}',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
+
                   ),
                 RandomNum(
                   solValue: currentGameData.solution,
                   onAnswerCorrect: fetchNewQuestionAndAnswer,
                 ),
+
               ],
             );
           },
