@@ -1,10 +1,9 @@
 
 
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../../../global/common/toast.dart';
 
-/// Service class for Firebase Authentication operations.
+/// Service class for Firebase Authentication operations.-
 class FirebaseAuthService {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -48,3 +47,4 @@ class FirebaseAuthService {
     return null;
   }
 }
+

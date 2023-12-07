@@ -39,7 +39,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         _emailController.text = user.email ?? '';
       }
     } catch (e) {
-      print("Error fetching user details: $e");
+      print("Error fetching user +details: $e");
     }
   }
 

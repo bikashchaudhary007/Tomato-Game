@@ -23,7 +23,7 @@ class AuthenticationService {
         accessToken: googleSignInAuthentication.accessToken,
         idToken: googleSignInAuthentication.idToken,
       );
-
+      
 
       // Sign in with Google Auth credentials
       final UserCredential authResult =

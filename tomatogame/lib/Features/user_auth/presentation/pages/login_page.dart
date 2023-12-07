@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  /// Navigates to the home page after successful sign-in.
+  /// Navigates to the home page after successful sign-in.+
   Future<void> _navigateToHomePage(User user) async {
     Navigator.pushReplacement(
       context,

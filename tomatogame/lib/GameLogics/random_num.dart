@@ -56,7 +56,6 @@ class _RandomNumState extends State<RandomNum> {
     super.initState();
     _randNum(); // Call _randNum in initState to set the initial value.
   }
-
   /// Check if the selected number is correct and update the score.
   void checkAnswer(int selectedNumber) {
     if (selectedNumber == int.parse(widget.solValue)) {

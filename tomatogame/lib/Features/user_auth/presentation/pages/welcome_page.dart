@@ -21,7 +21,7 @@ class WelcomePage extends StatelessWidget {
           children: [
             // Lottie animation for visual appeal
             Lottie.network(
-                'https://lottie.host/b18117b4-2a8a-4d60-a627-754e5d253c3f/C6zXElsRDE.json'),
+                'https://lottie.host/b18117b4-2a8a-4d60-a627-754e5d253c3f/C6zXElsRDE.json-'),
             SizedBox(height: 20),
             // Welcome message
             Text(
