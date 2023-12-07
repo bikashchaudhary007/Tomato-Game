@@ -5,6 +5,7 @@ import 'package:tomatogame/Features/user_auth/presentation/pages/home_page.dart'
 import '../../google_sign_in/google_sign_in.dart';
 import 'login_page.dart';
 
+/// A widget representing the welcome page of the Tomato Game application.
 class WelcomePage extends StatelessWidget {
   final AuthenticationService _authService = AuthenticationService();
 
@@ -18,14 +19,17 @@ class WelcomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Lottie animation for visual appeal
             Lottie.network(
                 'https://lottie.host/b18117b4-2a8a-4d60-a627-754e5d253c3f/C6zXElsRDE.json'),
             SizedBox(height: 20),
+            // Welcome message
             Text(
               "Hey Gamers !!! Let's Play",
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 20),
+            // Start Playing button
             ConstrainedBox(
               constraints: BoxConstraints.tightFor(height: 50,width: 250),
               child: ElevatedButton(
@@ -49,6 +53,7 @@ class WelcomePage extends StatelessWidget {
 
             SizedBox(height: 100),
 
+            // Logout button
             GestureDetector(
               onTap: () async {
                 await FirebaseAuth.instance.signOut();

@@ -1,60 +1,44 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tomatogame/Features/app/splash_screen/splash_screen.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/login_page.dart';
 
-
-/*
-Future main() async{
-
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-    runApp(const MyApp());
-
-  /*
-  WidgetsFlutterBinding.ensureInitialized();
-  if(kIsWeb){
-    await Firebase.initializeApp(options: FirebaseOptions(
-        apiKey: "AIzaSyDUbbc0b1LnlNHFMQogc1EI5vIqe0ijK0g",
-        appId: "1:975932705194:web:7b8bcda930220f541603d3",
-        messagingSenderId: "975932705194",
-        projectId: "tomatogame-17ae8"),
-    );
-  } else {
-    await Firebase.initializeApp();
-  }
-  // await Firebase.initializeApp();
-   */
-  // runApp(const MyApp());
-}
-*/
-
+/// The main function to start the Flutter application.
 Future<void> main() async {
+  // Ensure that Flutter is initialized.
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize Firebase.
   await Firebase.initializeApp();
+
+  // Run the application.
   runApp(const MyApp());
 }
 
+/// The main application widget.
 class MyApp extends StatelessWidget {
+  /// Constructor for the [MyApp] widget.
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      // Disable the debug banner.
       debugShowCheckedModeBanner: false,
+      // Set the application title.
       title: 'Tomato Game',
+
+      // Define the theme.
       theme: ThemeData(
-        // useMaterial3: true,
+        // Customize the color scheme with a seed color.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.redAccent),
       ),
+
+      // Set the initial screen to the splash screen containing the login page.
       home: SplashScreen(
         child: LoginPage(),
       ),
     );
   }
 }
-
-
-

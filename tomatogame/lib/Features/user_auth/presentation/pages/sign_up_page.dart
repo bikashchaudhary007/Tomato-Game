@@ -7,6 +7,7 @@ import 'package:tomatogame/global/common/toast.dart';
 
 import 'login_page.dart';
 
+/// Widget for user registration (Sign Up page).
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
 
@@ -31,7 +32,9 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  Future<void> _saveUserDetailsToFirestore(User user, String username, {String? googleDisplayName, String? googleEmail}) async {
+  /// Save user details to Firestore after successful registration.
+  Future<void> _saveUserDetailsToFirestore(User user, String username,
+      {String? googleDisplayName, String? googleEmail}) async {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
     Map<String, dynamic> userData = {
@@ -45,7 +48,6 @@ class _SignUpPageState extends State<SignUpPage> {
 
     await users.doc(user.uid).set(userData);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -102,14 +104,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: Center(
                     child: _signingUp
                         ? CircularProgressIndicator(
-                      color: Colors.green,
-                    )
+                            color: Colors.green,
+                          )
                         : Text(
-                      "Sign Up",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    ),
+                            "Sign Up",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
                   ),
                 ),
               ),
@@ -128,7 +130,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => LoginPage()),
-                            (route) => false,
+                        (route) => false,
                       );
                     },
                     child: Text(
@@ -148,7 +150,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  // Sign Up Method
+  /// Method to handle the Sign Up process.
   void _signUp() async {
     setState(() {
       _signingUp = true;

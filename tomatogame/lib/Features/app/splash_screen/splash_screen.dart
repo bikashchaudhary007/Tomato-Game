@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../user_auth/presentation/pages/login_page.dart';
-
+/// A splash screen that displays a Lottie animation before navigating to another screen.
 class SplashScreen extends StatefulWidget {
+  /// The child widget to navigate to after the splash screen.
   final Widget? child;
 
+  /// Constructor for the [SplashScreen] widget.
   const SplashScreen({super.key, this.child});
 
   @override
@@ -15,7 +16,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    // For 3 second delayed
+    // For 4 second delayed
     Future.delayed(Duration(seconds: 4), () {
       Navigator.pushAndRemoveUntil(
           context,
@@ -32,10 +33,10 @@ class _SplashScreenState extends State<SplashScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Center(
+          //Lottie animation
           child: Lottie.network(
               'https://lottie.host/a8404503-3401-41ab-a2fa-a2f4abaff61a/oAv5Rx7hFD.json'),
         ),
-
       ],
     ));
   }

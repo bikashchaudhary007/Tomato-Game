@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/home_page.dart';
-
-import '../../../../global/common/toast.dart';
 import '../../google_sign_in/google_sign_in.dart';
-import 'login_page.dart';
 
+/// Widget for displaying and updating the user profile.
 class ProfileScreen extends StatefulWidget {
   ProfileScreen({Key? key}) : super(key: key);
 
@@ -32,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
+  /// Fetch user details (username and email) from Firebase.
   Future<void> _fetchUserDetails() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -74,7 +73,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                 child: Text('Update Profile'),
               ),
-
             ],
           ),
         ),
@@ -82,6 +80,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  /// Update user details (specifically, the display name) in Firebase.
   Future<void> _updateUserDetails() async {
     try {
       User? user = FirebaseAuth.instance.currentUser;
@@ -98,12 +97,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         // Redirect to the home screen after updating the profile
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomePage()), // Replace HomeScreen with the actual name of your home screen
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomePage()), // Replace HomeScreen with the actual name of your home screen
         );
       }
     } catch (e) {
       print("Error updating user details: $e");
     }
   }
-
 }

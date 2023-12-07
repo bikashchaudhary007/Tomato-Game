@@ -1,13 +1,16 @@
-// import 'dart:js_interop';
+
 
 import 'package:firebase_auth/firebase_auth.dart';
 
 import '../../../global/common/toast.dart';
 
+/// Service class for Firebase Authentication operations.
 class FirebaseAuthService {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  //Sing Up Method
+  /// Sign up a new user with the provided [email] and [password].
+  ///
+  /// Returns a [User] if the sign-up is successful, otherwise returns `null`.
   Future<User?> signUpWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -26,7 +29,9 @@ class FirebaseAuthService {
     return null;
   }
 
-  //Sing In Method
+  /// Sign in a user with the provided [email] and [password].
+  ///
+  /// Returns a [User] if the sign-in is successful, otherwise returns `null`.
   Future<User?> signInWithEmailAndPassword(
       String email, String password) async {
     try {

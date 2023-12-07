@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/sign_up_page.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/welcome_page.dart';
 import 'package:tomatogame/Features/user_auth/presentation/widgets/form_container_widget.dart';
 import 'package:tomatogame/global/common/toast.dart';
 import 'package:tomatogame/Features/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import '../../google_sign_in/google_sign_in.dart';
-import 'home_page.dart';
 
+/// A widget representing the login page of the Tomato Game application.
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -30,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  /// Handles the sign-in process based on the specified sign-in method.
   Future<void> _signIn(String signInMethod) async {
     setState(() {
       _isSigning = true;
@@ -63,6 +63,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  /// Navigates to the home page after successful sign-in.
   Future<void> _navigateToHomePage(User user) async {
     Navigator.pushReplacement(
       context,
@@ -82,7 +83,11 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset('assets/images/tomato.png',width: 200, height: 200,),
+              Image.asset(
+                'assets/images/tomato.png',
+                width: 200,
+                height: 200,
+              ),
 
               Text(
                 "Login Here",
@@ -110,28 +115,25 @@ class _LoginPageState extends State<LoginPage> {
 
               //Login Button
               ConstrainedBox(
-                constraints: BoxConstraints.tightFor(height: 50,width: 250),
+                constraints: BoxConstraints.tightFor(height: 50, width: 250),
                 child: ElevatedButton(
                   onPressed: () async {
                     await _signIn('email');
                   },
                   child: _isSigning
                       ? CircularProgressIndicator(color: Colors.white)
-                      : Text("Login", style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18
-                  ),),
-
+                      : Text(
+                          "Login",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
                   style: ElevatedButton.styleFrom(
-                      primary:  Colors.green.withOpacity(0.5),
+                      primary: Colors.green.withOpacity(0.5),
                       // primary:  Color(0xFF516728).withOpacity(0.5),
                       elevation: 25,
                       shadowColor: Colors.grey,
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20)
-                      )
-                  ),
-
+                          borderRadius: BorderRadius.circular(20))),
                 ),
               ),
 
@@ -156,7 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                       Navigator.pushAndRemoveUntil(
                         context,
                         MaterialPageRoute(builder: (context) => SignUpPage()),
-                            (route) => false,
+                        (route) => false,
                       );
                     },
                     child: Text(
@@ -173,21 +175,23 @@ class _LoginPageState extends State<LoginPage> {
                 height: 20,
               ),
               ConstrainedBox(
-                constraints: BoxConstraints.tightFor(height: 50,width: 250),
+                constraints: BoxConstraints.tightFor(height: 50, width: 250),
                 child: ElevatedButton.icon(
                   onPressed: () async {
                     await _signIn('google');
                   },
-                  icon: Image.asset('assets/images/google.png', width: 30, height: 30,),
+                  icon: Image.asset(
+                    'assets/images/google.png',
+                    width: 30,
+                    height: 30,
+                  ),
                   label: Text("Sign In with Google"),
                   style: ElevatedButton.styleFrom(
-                    primary: Colors.blueGrey,
-                    elevation: 25,
-                    shadowColor: Colors.grey,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20)
-                    )
-                  ),
+                      primary: Colors.blueGrey,
+                      elevation: 25,
+                      shadowColor: Colors.grey,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20))),
                 ),
               ),
             ],

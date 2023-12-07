@@ -1,8 +1,8 @@
 
-
 import 'package:flutter/material.dart';
 
 
+/// Widget for a form container with a text input field.
 class FormContainerWidget extends StatefulWidget {
 
   final TextEditingController? controller;

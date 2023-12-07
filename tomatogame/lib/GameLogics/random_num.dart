@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-
 import '../global/common/toast.dart';
 
+/// Widget that displays a set of buttons with random numbers and handles user interaction.
 class RandomNum extends StatefulWidget {
-  RandomNum({Key? key, required this.solValue, required this.onAnswerCorrect,required this.score, required this.onUpdateScore,}) : super(key: key);
+  RandomNum({
+    Key? key,
+    required this.solValue,
+    required this.onAnswerCorrect,
+    required this.score,
+    required this.onUpdateScore,
+  }) : super(key: key);
+
+  // Properties required for the widget
   final String solValue;
   final VoidCallback onAnswerCorrect;
   int score;
@@ -15,14 +23,11 @@ class RandomNum extends StatefulWidget {
 }
 
 class _RandomNumState extends State<RandomNum> {
-  //game score
-
-
   String solValue = '';
-
 
   List<int> numbers = []; // List to store generated numbers
 
+  /// Method to generate a new set of random numbers.
   void _randNum() {
     setState(() {
       numbers.clear(); // Clear the list to generate a new set of numbers
@@ -33,20 +38,18 @@ class _RandomNumState extends State<RandomNum> {
         int randomNum;
         do {
           randomNum = Random().nextInt(10); // Generate a random number
-        } while (randomNum == int.parse(widget.solValue) || numbers.contains(randomNum));
+        } while (randomNum == int.parse(widget.solValue) ||
+            numbers.contains(randomNum));
         numbers.add(randomNum);
       }
 
       // Shuffle the numbers list to randomize the order
       numbers.shuffle();
 
-      print(numbers);// Print the list of generated numbers
+      print(numbers); // Print the list of generated numbers
       print('Solution Value: ${widget.solValue}');
     });
   }
-
-
-
 
   @override
   void initState() {
@@ -54,7 +57,7 @@ class _RandomNumState extends State<RandomNum> {
     _randNum(); // Call _randNum in initState to set the initial value.
   }
 
-
+  /// Check if the selected number is correct and update the score.
   void checkAnswer(int selectedNumber) {
     if (selectedNumber == int.parse(widget.solValue)) {
       showToast(message: "Correct Answer");
@@ -73,15 +76,10 @@ class _RandomNumState extends State<RandomNum> {
     }
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-
         //Answers Buttons
         Padding(
           padding: const EdgeInsets.all(8.0),
@@ -91,8 +89,7 @@ class _RandomNumState extends State<RandomNum> {
             // color: Colors.redAccent,
             decoration: BoxDecoration(
                 color: Colors.redAccent.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(18)
-            ),
+                borderRadius: BorderRadius.circular(18)),
 
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -102,37 +99,33 @@ class _RandomNumState extends State<RandomNum> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ConstrainedBox(
-                      constraints: BoxConstraints.tightFor(height: 60,width: 70),
+                      constraints:
+                          BoxConstraints.tightFor(height: 60, width: 70),
                       child: ElevatedButton(
-                        onPressed:  () => checkAnswer(numbers[0]),
+                        onPressed: () => checkAnswer(numbers[0]),
                         child: Text("${numbers[0]}"),
                         style: ElevatedButton.styleFrom(
-                            primary:  Colors.red,
+                            primary: Colors.red,
                             elevation: 25,
                             shadowColor: Colors.grey,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)
-                            )
-                        ),
+                                borderRadius: BorderRadius.circular(20))),
                       ),
                     ),
-
                     ConstrainedBox(
-                      constraints: BoxConstraints.tightFor(height: 60,width: 70),
+                      constraints:
+                          BoxConstraints.tightFor(height: 60, width: 70),
                       child: ElevatedButton(
                         onPressed: () => checkAnswer(numbers[1]),
                         child: Text("${numbers[1]}"),
                         style: ElevatedButton.styleFrom(
-                            primary:  Colors.red,
+                            primary: Colors.red,
                             elevation: 25,
                             shadowColor: Colors.grey,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)
-                            )
-                        ),
+                                borderRadius: BorderRadius.circular(20))),
                       ),
                     ),
-
                   ],
                 ),
                 SizedBox(height: 16),
@@ -140,46 +133,39 @@ class _RandomNumState extends State<RandomNum> {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     ConstrainedBox(
-                      constraints: BoxConstraints.tightFor(height: 60,width: 70),
+                      constraints:
+                          BoxConstraints.tightFor(height: 60, width: 70),
                       child: ElevatedButton(
                         onPressed: () => checkAnswer(numbers[2]),
                         child: Text("${numbers[2]}"),
                         style: ElevatedButton.styleFrom(
-                            primary:  Colors.red,
+                            primary: Colors.red,
                             elevation: 25,
                             shadowColor: Colors.grey,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)
-                            )
-                        ),
+                                borderRadius: BorderRadius.circular(20))),
                       ),
                     ),
-
                     ConstrainedBox(
-                      constraints: BoxConstraints.tightFor(height: 60,width: 70),
+                      constraints:
+                          BoxConstraints.tightFor(height: 60, width: 70),
                       child: ElevatedButton(
                         onPressed: () => checkAnswer(numbers[3]),
                         child: Text("${numbers[3]}"),
                         style: ElevatedButton.styleFrom(
-                            primary:  Colors.red,
+                            primary: Colors.red,
                             elevation: 25,
                             shadowColor: Colors.grey,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20)
-                            )
-                        ),
+                                borderRadius: BorderRadius.circular(20))),
                       ),
                     ),
-
                   ],
                 ),
-
               ],
             ),
           ),
         ),
-
-
       ],
     );
   }
