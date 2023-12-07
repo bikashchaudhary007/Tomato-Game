@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import 'package:tomatogame/GameLogics/game.dart';
-
 import '../global/common/toast.dart';
 
 class RandomNum extends StatefulWidget {
-  const RandomNum({Key? key, required this.solValue, required this.onAnswerCorrect}) : super(key: key);
+  RandomNum({Key? key, required this.solValue, required this.onAnswerCorrect,required this.score, required this.onUpdateScore,}) : super(key: key);
   final String solValue;
   final VoidCallback onAnswerCorrect;
+  int score;
+  final Function(int) onUpdateScore; // Add this line
 
   @override
   _RandomNumState createState() => _RandomNumState();
@@ -54,16 +54,27 @@ class _RandomNumState extends State<RandomNum> {
     _randNum(); // Call _randNum in initState to set the initial value.
   }
 
-  //Checking answer
+
   void checkAnswer(int selectedNumber) {
     if (selectedNumber == int.parse(widget.solValue)) {
-      // If the answer is correct, call the callback to fetch new data
       showToast(message: "Correct Answer");
       widget.onAnswerCorrect();
     } else {
-      showToast(message: "Incorrect");
+      // Decrease the score by 1
+      int updatedScore = widget.score - 1;
+
+      // Ensure the updated score is not less than zero
+      updatedScore = updatedScore < 0 ? 0 : updatedScore;
+
+      // Update the score in the parent widget using onUpdateScore callback
+      widget.onUpdateScore(updatedScore);
+
+      showToast(message: "Incorrect Answer");
     }
   }
+
+
+
 
 
   @override

@@ -2,9 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tomatogame/Features/user_auth/presentation/pages/welcome_page.dart';
 import 'package:tomatogame/GameLogics/random_num.dart';
 import '../Features/user_auth/game_api_integration/game_api.dart';
-
 
 class Game2 extends StatefulWidget {
   const Game2({Key? key}) : super(key: key);
@@ -42,6 +42,7 @@ class _GameState extends State<Game2> {
   void _startTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
+        print("Timer tick");
         if (_remainingTime > 0) {
           _remainingTime--;
         } else {
@@ -96,27 +97,44 @@ class _GameState extends State<Game2> {
       setState(() {
         currentGameData = gameData;
         score++;
+      });
 
-        _saveScoreToFirestore();
-
+      // Move the score update to Firestore to the then block
+      _saveScoreToFirestore().then((_) {
         if (score % 10 == 0) {
-          level++;
+          setState(() {
+            level++;
+          });
         }
+        // Now you can safely proceed with other actions
+        // such as fetching new data or showing the game over dialog
+        // if (score >= maxScore) {
+        //   _timer.cancel(); // Stop the timer when reaching the max score
+        //   _showGameOverDialog();
+        // }
       });
     });
   }
 
+
+
+
   Future<void> _saveScoreToFirestore() async {
     if (currentUser != null) {
-      await _firestore.collection('scores').doc(currentUser!.uid).set({
-        'score': score,
-        'level': level,
-      });
+      await _firestore.collection('scores').doc(currentUser!.uid).set(
+        {
+          'score': score,
+          'level': level,
+        },
+        SetOptions(merge: true), // Use merge option to update or create the document
+      );
     }
   }
 
+
   void _showGameOverDialog() {
     showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Game Over'),
@@ -129,9 +147,36 @@ class _GameState extends State<Game2> {
             },
             child: Text('Play Again'),
           ),
+          TextButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => WelcomePage()),
+              );
+              _timer.cancel();//to stop the timer event
+              // Update the remaining score to Firestore before exiting
+              _saveRemainingScoreToFirestore(_remainingTime);
+            },
+            child: Text('Exit'),
+          ),
         ],
       ),
     );
+  }
+
+  Future<void> _saveRemainingScoreToFirestore(int remainingTime) async {
+    if (currentUser != null) {
+      // Calculate remaining score based on remaining time
+      int remainingScore = score + (remainingTime * 2); // You can adjust the calculation as needed
+
+      await _firestore.collection('scores').doc(currentUser!.uid).set(
+        {
+          'score': remainingScore,
+          'level': level,
+        },
+        SetOptions(merge: true),
+      );
+    }
   }
 
   void _restartGame() {
@@ -146,123 +191,137 @@ class _GameState extends State<Game2> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return WillPopScope(
+      onWillPop: () async {
+        _timer.cancel(); // Stop the timer when the back button is pressed
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => WelcomePage()),
+        );
+        return false; // Return false to prevent default back button behavior
+      },
+      child: Column(
           children: [
-            Container(
-              width: 120,
-              height: 35,
-              decoration: BoxDecoration(
-                  color: Colors.redAccent,
-                  borderRadius: BorderRadius.circular(18)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    "Level",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: 120,
+                  height: 35,
+                  decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        "Level",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24),
+                      ),
+                      Text(
+                        "$level",
+                        style: TextStyle(
+                            color: Colors.yellow,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24),
+                      ),
+                    ],
                   ),
-                  Text(
-                    "$level",
-                    style: TextStyle(
-                        color: Colors.yellow,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24),
+                ),
+                Container(
+                  width: 120,
+                  height: 35,
+                  decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(18)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Text(
+                        "Score: $score",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Container(
-              width: 120,
-              height: 35,
-              decoration: BoxDecoration(
-                  color: Colors.redAccent,
-                  borderRadius: BorderRadius.circular(18)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    "Score: $score",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 24),
-                  ),
-                ],
-              ),
+            SizedBox(height: 16),
+            FutureBuilder<GameData>(
+              future: gameQuestions,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text("Error: ${snapshot.error}"));
+                } else if (!snapshot.hasData) {
+                  return Center(child: Text("No data available."));
+                }
+
+                currentGameData = snapshot.data!;
+
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Center(
+                      child: Image.network(
+                        currentGameData.imageUrl,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Column(
+                            children: [
+                              Text("Failed to load the image."),
+                              Text("Error: ${error.toString()}"),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          value: 1 - (_remainingTime / 30),
+                          color: Colors.red,
+                        ),
+                        Text(
+                          '$_remainingTime',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Divider(),
+                    if (currentUser != null)
+                      Column(
+                        // Add your UI components here
+                      ),
+                    RandomNum(
+                      solValue: currentGameData.solution,
+                      onAnswerCorrect: fetchNewQuestionAndAnswer,
+                      score: score,
+                      onUpdateScore: (updatedScore) {
+                        setState(() {
+                          score = updatedScore;
+                        });
+                      },
+                    ),
+
+                  ],
+                );
+              },
             ),
           ],
         ),
-
-        SizedBox(height: 16),
-        FutureBuilder<GameData>(
-          future: gameQuestions,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Center(child: Text("Error: ${snapshot.error}"));
-            } else if (!snapshot.hasData) {
-              return Center(child: Text("No data available."));
-            }
-
-            currentGameData = snapshot.data!;
-
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Center(
-                  child: Image.network(
-                    currentGameData.imageUrl,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Column(
-                        children: [
-                          Text("Failed to load the image."),
-                          Text("Error: ${error.toString()}"),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(height: 16),
-
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      value: 1 - (_remainingTime / 30),
-                      color: Colors.red,
-                    ),
-                    Text(
-                      '$_remainingTime',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
-                ),
-                Divider(),
-                if (currentUser != null)
-                  Column(
-
-                  ),
-                RandomNum(
-                  solValue: currentGameData.solution,
-                  onAnswerCorrect: fetchNewQuestionAndAnswer,
-                ),
-
-              ],
-            );
-          },
-        ),
-      ],
     );
   }
 }

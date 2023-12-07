@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/profile_screen.dart';
-import 'package:tomatogame/GameLogics/game.dart';
 import 'package:tomatogame/Features/user_auth/presentation/pages/login_page.dart';
 import 'package:tomatogame/global/common/toast.dart';
 
@@ -17,7 +16,6 @@ class HomePage extends StatelessWidget {
     _authService = AuthenticationService(); // Initialize in the constructor
   }
 
-  // const HomePage({super.key, required this.userName});
 
 
   @override
@@ -25,6 +23,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Tomato Game"),
+        automaticallyImplyLeading: false, // Set this to false to hide the back arrow
         actions: [
           IconButton(
             icon: Icon(Icons.account_circle),
@@ -45,14 +44,18 @@ class HomePage extends StatelessWidget {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
-
               SizedBox(
                 height: 30,
               ),
 
               //Calling Game API
               // Game(),
-              Game2(),
+              SizedBox(
+                height: 600, // Provide a fixed height as an example
+                child: Game2(),
+              ),
+
+
               //Testing Random Number Generator
               // RandomNum(),
 

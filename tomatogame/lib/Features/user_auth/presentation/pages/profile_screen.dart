@@ -74,34 +74,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 },
                 child: Text('Update Profile'),
               ),
-              GestureDetector(
-                onTap: () async {
-                  FirebaseAuth.instance.signOut();
-                  await _authService.signOutFromGoogle();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
-                  );
-                  showToast(message: "Successfully sign out");
-                },
-                child: Container(
-                  width: 100,
-                  height: 45,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Colors.blue,
-                  ),
-                  child: Center(
-                    child: Text(
-                      "LogOut",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+
             ],
           ),
         ),
