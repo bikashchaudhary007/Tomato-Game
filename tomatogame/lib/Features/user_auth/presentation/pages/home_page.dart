@@ -5,7 +5,7 @@ import 'package:tomatogame/Features/user_auth/presentation/pages/login_page.dart
 import 'package:tomatogame/global/common/toast.dart';
 
 
-import '../../../../GameLogics/game2.dart';
+import '../../../../GameLogics/game.dart';
 import '../../../../GameLogics/random_num.dart';
 import '../../google_sign_in/google_sign_in.dart';
 
@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
               // Game(),
               SizedBox(
                 height: 600, // Provide a fixed height as an example
-                child: Game2(),
+                child: Game(),
               ),
 
 

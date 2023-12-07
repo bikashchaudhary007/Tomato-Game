@@ -6,14 +6,14 @@ import 'package:tomatogame/Features/user_auth/presentation/pages/welcome_page.da
 import 'package:tomatogame/GameLogics/random_num.dart';
 import '../Features/user_auth/game_api_integration/game_api.dart';
 
-class Game2 extends StatefulWidget {
-  const Game2({Key? key}) : super(key: key);
+class Game extends StatefulWidget {
+  const Game({Key? key}) : super(key: key);
 
   @override
-  State<Game2> createState() => _GameState();
+  State<Game> createState() => _GameState();
 }
 
-class _GameState extends State<Game2> {
+class _GameState extends State<Game> {
   int score = 0;
   int level = 1;
   late GameData currentGameData;
